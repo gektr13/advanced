@@ -2,7 +2,7 @@
 
 namespace backend\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "organization".
@@ -14,15 +14,30 @@ use Yii;
  * @property float|null $balance
  * @property string|null $created_at
  * @property string|null $updated_at
+ *
+ * @property Transaction[] $transactions
  */
 class Organization extends \yii\db\ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'organization';
+        return 'organizations';
     }
 
     /**
@@ -32,7 +47,8 @@ class Organization extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['balance'], 'number', 'min' => 0,],
+            [['balance'], 'number','min' => 0],
+            [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 12],
             [['name'], 'unique'],
         ];
@@ -50,5 +66,15 @@ class Organization extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
+    }
+
+    /**
+     * Gets query for [[Transactions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTransactions()
+    {
+        return $this->hasMany(Transaction::class, ['organization_id' => 'id']);
     }
 }

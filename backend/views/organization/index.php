@@ -32,8 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'balance',
-            //'created_at',
-            //'updated_at',
+            [
+                'attribute'=>'created_at',
+                'label'=>'Дата создания',
+                'format'=>'datetime',
+                'headerOptions' => ['width' => '200'],
+            ],
+            [
+                'attribute'=>'updated_at',
+                'label'=>'Последнее обновление',
+                'format'=>'datetime',
+                'headerOptions' => ['width' => '200'],
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Organization $model, $key, $index, $column) {

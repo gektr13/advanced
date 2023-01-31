@@ -4,7 +4,8 @@ namespace backend\controllers;
 
 use backend\models\Organization;
 use backend\models\OrganizationSearch;
-use common\models\User;
+use backend\models\Transaction;
+use backend\models\TransactionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -56,8 +57,18 @@ class OrganizationController extends Controller
      */
     public function actionView($id)
     {
+        $searchModel = new TransactionSearch(
+            [
+                'organization_id' => $id
+            ],
+        );
+
+        $dataProvider = $searchModel->search($this->request->queryParams);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -70,14 +81,7 @@ class OrganizationController extends Controller
     {
         $model = new Organization();
 
-        $user = new User();
-
         if ($this->request->isPost) {
-
-            $date = date('Y-m-d h:i:s');
-
-            $model->created_at = $date;
-            $model->updated_at = $date;
 
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -101,8 +105,6 @@ class OrganizationController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
-        $model->updated_at = date('Y-m-d h:i:s');
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -143,47 +145,32 @@ class OrganizationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionPlus($id)
+    public function actionCreateTransaction($organization_id)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel($organization_id);
 
+        $transaction = new Transaction();
 
-        if($this->request->isPost){
+        $transaction->organization_id = $organization_id;
 
-            $model->updated_at = date('Y-m-d h:i:s');
+        if ($this->request->isPost && $transaction->load($this->request->post())){
 
-            $model->balance = $model->balance + $this->request->post('different');
+            $transaction->type ? $model->balance = $model->balance + $transaction->value : $model->balance = $model->balance - $transaction->value;
+
+            $model->balance = $model->balance + $this->request->post($transaction->value);
 
             if ($model->save()) {
+
+                $transaction->save();
 
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
 
-        return $this->render('plus', [
+
+        return $this->render('transaction', [
             'model' => $model,
-        ]);
-    }
-
-    public function actionMinus($id)
-    {
-        $model = $this->findModel($id);
-
-
-        if($this->request->isPost){
-
-            $model->updated_at = date('Y-m-d h:i:s');
-
-            $model->balance = $model->balance - $this->request->post('different');
-
-            if ($model->save()) {
-
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
-
-        return $this->render('minus', [
-            'model' => $model,
+            'transaction' => $transaction,
         ]);
     }
 }

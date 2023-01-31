@@ -5,19 +5,19 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%organization}}`.
  */
-class m230129_103656_create_organization_table extends Migration
+class m230129_103656_create_organizations_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function safeUp()
     {
-        $this->createTable('{{%organization}}', [
+        $this->createTable('{{%organizations}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(12)->notNull()->unique(),
             'balance' => $this->float()->defaultValue(0),
-            'created_at' => $this->dateTime(),
-            'updated_at' => $this->dateTime(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer(),
         ]);
     }
 
@@ -26,6 +26,6 @@ class m230129_103656_create_organization_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('{{%organization}}');
+        $this->dropTable('{{%organizations}}');
     }
 }

@@ -2,14 +2,21 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\ActionColumn;
+use yii\grid\GridView;
 
 /** @var yii\web\View $this */
 /** @var backend\models\Organization $model */
+/** @var backend\models\Transaction $transactions */
+/** @var backend\models\OrganizationSearch $searchModel */
+/** @var yii\data\ActiveDataProvider $dataProvider */
+
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Organizations', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 <div class="organization-view">
 
@@ -32,12 +39,48 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'name',
             'balance',
-            'created_at',
-            'updated_at',
+            [
+                'attribute'=>'created_at',
+                'label'=>'Дата создания',
+                'format'=>'datetime', // Доступные модификаторы - date:datetime:time
+                'headerOptions' => ['width' => '200'],
+            ],
+            [
+                'attribute'=>'updated_at',
+                'label'=>'Псоледнее обновлнеие',
+                'format'=>'datetime',
+                'headerOptions' => ['width' => '200'],
+            ],
         ],
     ]) ?>
 
-    <?= Html::a('Начислить средства на баланс', ['plus', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-    <?= Html::a('Списать средства с баланса', ['minus', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?= Html::a('Совершить транзакцию', ['create-transaction', 'organization_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
+    <br><br>
+    <h1>Транзакции</h1>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+
+            'id',
+            'value',
+            'purpose',
+            [
+                'attribute' => 'type',
+                'value' => function($data) {
+                 return !empty($data->type) ? 'Поплнение' : 'Снятие';
+                 }
+            ],
+            [
+                'attribute'=>'created_at',
+                'label'=>'Дата операции',
+                'format'=>'datetime',
+                'headerOptions' => ['width' => '200'],
+            ],
+        ],
+    ]); ?>
 
 </div>

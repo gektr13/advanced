@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var backend\models\Organization $model */
 /** @var yii\widgets\ActiveForm $form */
+
 ?>
 
 <div class="organization-form">
