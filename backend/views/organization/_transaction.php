@@ -4,11 +4,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var backend\models\Organization $model */
-/** @var backend\models\Transaction $transaction */
+/** @var backend\models\CreateTransactionAugment $model */
 /** @var yii\widgets\ActiveForm $form */
-
-$transaction->type = true;
 
 ?>
 
@@ -16,14 +13,9 @@ $transaction->type = true;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($transaction, 'value')->textInput() ?>
-    <?= $form->field($transaction, 'purpose')->textInput() ?>
-    <?= $form->field($transaction, 'type')->radioList([
-            true => 'Начислить',
-            false => 'Снять',
-        ])->label('Тип транзакции');
+    <?= $form->field($model, 'value')->textInput() ?>
+    <?= $form->field($model, 'purpose')->textInput() ?>
 
-    ?>
     <?= $form->errorSummary($model); ?>
 
     <br><br>

@@ -20,6 +20,9 @@ use yii\db\ActiveRecord;
  */
 class Transaction extends \yii\db\ActiveRecord
 {
+    const TYPE_AUGMENT = 1;
+    const TYPE_DEDUCT = 2;
+
     public function behaviors()
     {
         return [

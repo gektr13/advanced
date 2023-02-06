@@ -2,9 +2,11 @@
 
 namespace backend\controllers;
 
+use backend\models\CreateTransactionAugment;
+use backend\models\CreateTransactionDeduct;
 use backend\models\Organization;
 use backend\models\OrganizationSearch;
-use backend\models\Transaction;
+use backend\models\TransactionUp;
 use backend\models\TransactionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -145,20 +147,31 @@ class OrganizationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionCreateTransaction($organization_id)
+    public function actionAugmentTransaction($organization_id)
     {
-        $model = $this->findModel($organization_id);
 
-        $transaction = new Transaction();
+        $model = new CreateTransactionAugment(['organization' => $this->findModel($organization_id)]);
 
-        if ($this->request->isPost && $transaction->load($this->request->post()) && $transaction->createTransaction($model, $transaction)) {
-
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(\Yii::$app->request->post()) && $model->create()) {
+            return $this->redirect(['organization/view', 'id' => $organization_id]);
         }
 
         return $this->render('transaction', [
             'model' => $model,
-            'transaction' => $transaction,
+        ]);
+    }
+
+    public function actionDeductTransaction($organization_id)
+    {
+
+        $model = new CreateTransactionDeduct(['organization' => $this->findModel($organization_id)]);
+
+        if ($model->load(\Yii::$app->request->post()) && $model->create()) {
+            return $this->redirect(['organization/view', 'id' => $organization_id]);
+        }
+
+        return $this->render('transaction', [
+            'model' => $model,
         ]);
     }
 }
