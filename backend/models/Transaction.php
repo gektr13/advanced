@@ -46,9 +46,10 @@ class Transaction extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['organization_id', 'value','created_at'], 'integer'],
+            [['organization_id', 'value', 'created_at'], 'integer'],
             [['type'], 'boolean'],
-            [['purpose','value'], 'required'],
+            [['purpose', 'value'], 'required'],
+            [['value'], 'integer', 'min' => 1],
             [['purpose'], 'string', 'max' => 255],
             [['organization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::class, 'targetAttribute' => ['organization_id' => 'id']],
         ];
@@ -77,5 +78,29 @@ class Transaction extends \yii\db\ActiveRecord
     public function getOrganization()
     {
         return $this->hasOne(Organization::class, ['id' => 'organization_id']);
+    }
+
+    public function createTransaction($organization, $transaction)
+    {
+
+        $transaction->type ? $organization->balance = $organization->balance + $transaction->value : $organization->balance = $organization->balance - $transaction->value;
+
+        $t = \Yii::$app->db->beginTransaction();
+
+        try {
+            if ($organization->save()) {
+                $transaction->organization_id = $organization->id;
+                $transaction->save();
+            }
+
+            $t->commit();
+
+            return true;
+        } catch (\Exception $e) {
+
+            $t->rollBack();
+
+            throw $e;
+        }
     }
 }

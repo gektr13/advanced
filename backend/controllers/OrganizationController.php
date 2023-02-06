@@ -151,22 +151,10 @@ class OrganizationController extends Controller
 
         $transaction = new Transaction();
 
-        $transaction->organization_id = $organization_id;
+        if ($this->request->isPost && $transaction->load($this->request->post()) && $transaction->createTransaction($model, $transaction)) {
 
-        if ($this->request->isPost && $transaction->load($this->request->post())){
-
-            $transaction->type ? $model->balance = $model->balance + $transaction->value : $model->balance = $model->balance - $transaction->value;
-
-            $model->balance = $model->balance + $this->request->post($transaction->value);
-
-            if ($model->save()) {
-
-                $transaction->save();
-
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
+            return $this->redirect(['view', 'id' => $model->id]);
         }
-
 
         return $this->render('transaction', [
             'model' => $model,

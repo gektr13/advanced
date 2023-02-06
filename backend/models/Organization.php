@@ -77,4 +77,9 @@ class Organization extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Transaction::class, ['organization_id' => 'id']);
     }
+
+    public function getBalance()
+    {
+
+    }
 }
