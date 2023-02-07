@@ -78,8 +78,8 @@ class Organization extends \yii\db\ActiveRecord
         return $this->hasMany(Transaction::class, ['organization_id' => 'id']);
     }
 
-    public function getBalance()
+    public static function getBalance($id)
     {
-
+        return Transaction::find()->where(['organization_id' => $id, 'type' => Transaction::TYPE_AUGMENT])->sum('value') - Transaction::find()->where(['organization_id' => $id, 'type' => Transaction::TYPE_DEDUCT])->sum('value');
     }
 }

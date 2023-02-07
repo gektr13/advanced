@@ -2,10 +2,9 @@
 
 
 /** @var yii\web\View $this */
-/** @var backend\models\Organization $model */
-/** @var backend\models\Transaction $transaction */
+/** @var \backend\models\CreateTransactionAugment $model */
 
-$this->title = 'Создание транзакции для :' . $model->name;
+$this->title = 'Создание транзакции для :' . $model->organization->name;
 $this->params['breadcrumbs'][] = ['label' => 'Organizations', 'url' => ['index']];
 
 $this->params['breadcrumbs'][] = 'Update';
@@ -14,7 +13,6 @@ $this->params['breadcrumbs'][] = 'Update';
 
     <?= $this->render('_transaction', [
         'model' => $model,
-        'transaction' => $transaction,
     ]) ?>
 
 </div>

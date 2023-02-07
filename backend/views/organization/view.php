@@ -54,7 +54,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]) ?>
 
-    <?= Html::a('Совершить транзакцию', ['create-transaction', 'organization_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?= Html::a('Добавить на баланс', ['augment-transaction', 'organization_id' => $model->id], ['class' => 'btn btn-primary']) ?>
+
+    <?= Html::a('Снять с баланса', ['deduct-transaction', 'organization_id' => $model->id], ['class' => 'btn btn-primary']) ?>
 
     <br><br>
     <h1>Транзакции</h1>
