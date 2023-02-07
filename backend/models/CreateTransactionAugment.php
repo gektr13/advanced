@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\models;
 
 
@@ -58,9 +59,9 @@ class CreateTransactionAugment extends Model
 
             if ($model->save()) {
 
-                    $t->commit();
+                $t->commit();
 
-                    return true;
+                return true;
             } else {
                 throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
             }

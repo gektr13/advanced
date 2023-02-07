@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
@@ -40,15 +39,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
             'balance',
             [
-                'attribute'=>'created_at',
-                'label'=>'Дата создания',
-                'format'=>'datetime', // Доступные модификаторы - date:datetime:time
+                'attribute' => 'balance',
+                'value' => function ($model) {
+                    return $model->balance;
+                },
+            ],
+            [
+                'attribute' => 'created_at',
+                'label' => 'Дата создания',
+                'format' => 'datetime', // Доступные модификаторы - date:datetime:time
                 'headerOptions' => ['width' => '200'],
             ],
             [
-                'attribute'=>'updated_at',
-                'label'=>'Псоледнее обновлнеие',
-                'format'=>'datetime',
+                'attribute' => 'updated_at',
+                'label' => 'Псоледнее обновлнеие',
+                'format' => 'datetime',
                 'headerOptions' => ['width' => '200'],
             ],
         ],
@@ -72,14 +77,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'purpose',
             [
                 'attribute' => 'type',
-                'value' => function($data) {
-                 return !empty($data->type) ? 'Поплнение' : 'Снятие';
-                 }
+                'value' => function ($data) {
+                    return !empty($data->type) ? 'Поплнение' : 'Снятие';
+                }
             ],
             [
-                'attribute'=>'created_at',
-                'label'=>'Дата операции',
-                'format'=>'datetime',
+                'attribute' => 'created_at',
+                'label' => 'Дата операции',
+                'format' => 'datetime',
                 'headerOptions' => ['width' => '200'],
             ],
         ],

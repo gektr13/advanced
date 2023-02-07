@@ -31,29 +31,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
+            'balance',
             [
-                'attribute' => 'balance',
-                'value' => function ($model) {
-                    return  Organization::getBalance($model->id);
-                },
-            ],
-            [
-                'attribute'=>'created_at',
-                'label'=>'Дата создания',
-                'format'=>'datetime',
+                'attribute' => 'created_at',
+                'label' => 'Дата создания',
+                'format' => 'datetime',
                 'headerOptions' => ['width' => '200'],
             ],
             [
-                'attribute'=>'updated_at',
-                'label'=>'Последнее обновление',
-                'format'=>'datetime',
+                'attribute' => 'updated_at',
+                'label' => 'Последнее обновление',
+                'format' => 'datetime',
                 'headerOptions' => ['width' => '200'],
             ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Organization $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>
