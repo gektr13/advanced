@@ -54,17 +54,13 @@ class CreateTransactionDeduct extends Model
             $model->organization_id = $this->organization->id;
             $model->value = $this->value;
             $model->purpose = $this->purpose;
-            $model->type = Transaction::TYPE_AUGMENT;
+            $model->type = Transaction::TYPE_DEDUCT;
 
             if ($model->save()) {
-                $organization->balance -= $this->value;
-                if ($organization->save()) {
+
                     $t->commit();
 
                     return true;
-                } else {
-                    throw new \Exception('Не удалось сохранить баланс организации ' . json_encode($organization->errors));
-                }
             } else {
                 throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
             }

@@ -6,7 +6,6 @@ use backend\models\CreateTransactionAugment;
 use backend\models\CreateTransactionDeduct;
 use backend\models\Organization;
 use backend\models\OrganizationSearch;
-use backend\models\TransactionUp;
 use backend\models\TransactionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -64,6 +63,8 @@ class OrganizationController extends Controller
                 'organization_id' => $id
             ],
         );
+
+        $balance = Organization::getBalance($id);
 
         $dataProvider = $searchModel->search($this->request->queryParams);
 

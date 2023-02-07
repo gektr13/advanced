@@ -31,7 +31,12 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'name',
-            'balance',
+            [
+                'attribute' => 'balance',
+                'value' => function ($model) {
+                    return  Organization::getBalance($model->id);
+                },
+            ],
             [
                 'attribute'=>'created_at',
                 'label'=>'Дата создания',

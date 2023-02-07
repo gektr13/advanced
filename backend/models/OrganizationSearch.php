@@ -2,15 +2,18 @@
 
 namespace backend\models;
 
+use backend\models\Organization;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\Organization;
+
 
 /**
  * OrganizationSearch represents the model behind the search form of `backend\models\Organization`.
  */
 class OrganizationSearch extends Organization
 {
+    public $balance;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +21,7 @@ class OrganizationSearch extends Organization
     {
         return [
             [['id'], 'integer'],
-            [['name', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'created_at', 'updated_at', 'balance'], 'safe'],
             [['balance'], 'number'],
         ];
     }
@@ -43,6 +46,8 @@ class OrganizationSearch extends Organization
     {
         $query = Organization::find();
 
+
+
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -60,12 +65,13 @@ class OrganizationSearch extends Organization
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'balance' => $this->balance,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
+
         $query->andFilterWhere(['like', 'name', $this->name]);
+
 
         return $dataProvider;
     }

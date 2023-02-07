@@ -21,7 +21,7 @@ use yii\db\ActiveRecord;
 class Transaction extends \yii\db\ActiveRecord
 {
     const TYPE_AUGMENT = 1;
-    const TYPE_DEDUCT = 2;
+    const TYPE_DEDUCT = 0;
 
     public function behaviors()
     {
@@ -83,27 +83,4 @@ class Transaction extends \yii\db\ActiveRecord
         return $this->hasOne(Organization::class, ['id' => 'organization_id']);
     }
 
-    public function createTransaction($organization, $transaction)
-    {
-
-        $transaction->type ? $organization->balance = $organization->balance + $transaction->value : $organization->balance = $organization->balance - $transaction->value;
-
-        $t = \Yii::$app->db->beginTransaction();
-
-        try {
-            if ($organization->save()) {
-                $transaction->organization_id = $organization->id;
-                $transaction->save();
-            }
-
-            $t->commit();
-
-            return true;
-        } catch (\Exception $e) {
-
-            $t->rollBack();
-
-            throw $e;
-        }
-    }
 }
