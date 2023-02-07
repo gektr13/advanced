@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\models;
 
 
@@ -56,13 +57,21 @@ class CreateTransactionDeduct extends Model
             $model->purpose = $this->purpose;
             $model->type = Transaction::TYPE_DEDUCT;
 
-            if ($model->save()) {
+            if ($organization->balance - $this->value >= 0) {
+                if ($model->save()) {
 
-                    $t->commit();
+                    if ($organization->save()) {
+                        $t->commit();
 
-                    return true;
+                        return true;
+                    } else {
+                        throw new \Exception('Не удалось сохранить баланс организации ' . json_encode($organization->errors));
+                    }
+                } else {
+                    throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
+                }
             } else {
-                throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
+                throw new \Exception('Баланс меньше 0> ' . json_encode($model->errors));
             }
         } catch (\Exception $e) {
             $t->rollBack();

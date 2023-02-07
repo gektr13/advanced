@@ -2,7 +2,6 @@
 
 namespace backend\models;
 
-use backend\models\Organization;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -22,7 +21,7 @@ class OrganizationSearch extends Organization
         return [
             [['id'], 'integer'],
             [['name', 'created_at', 'updated_at', 'balance'], 'safe'],
-            [['balance'], 'number'],
+            //[['balance'], 'number'],
         ];
     }
 
@@ -44,14 +43,48 @@ class OrganizationSearch extends Organization
      */
     public function search($params)
     {
-        $query = Organization::find();
+        $query = Organization::find()->select('organizations.id, organizations.name,transaction.balance as balance, organizations.created_at, organizations.updated_at');
+
+        $augQuery = Transaction::find()
+            ->select('organization_id, SUM(value) as sum')
+            ->where(['type' => Transaction::TYPE_AUGMENT])
+            ->groupBy('organization_id');
+
+        if (Transaction::find()->where(['type' => Transaction::TYPE_DEDUCT])->one()) {
+            $dedQuery = Transaction::find()
+                ->select('organization_id, SUM(value) as sum')
+                ->where(['type' => Transaction::TYPE_DEDUCT])
+                ->groupBy('organization_id');
+
+            $subQuery = Transaction::find()->from(['AUG' => $augQuery, 'DED' => $dedQuery])
+                ->select('AUG.organization_id, (AUG.sum - DED.sum) as balance')
+                ->groupBy('organization_id');
+        } else {
+            $subQuery = Transaction::find()->from(['AUG' => $augQuery])
+                ->select('AUG.organization_id, AUG.sum  as balance')
+                ->groupBy('organization_id');
+        }
 
 
+        $query->join('LEFT OUTER JOIN', ['transaction' => $subQuery], 'transaction.organization_id = id');
 
-        // add conditions that should always apply here
-
+        // print_r( $$subQuery->createCommand()->getRawSql());
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+        ]);
+
+        $dataProvider->setSort([
+            'attributes' => [
+                'id',
+                'name',
+                'balance' => [
+                    'asc' => ['transaction.balance' => SORT_ASC],
+                    'desc' => ['transaction.balance' => SORT_DESC],
+                    'label' => 'Balance'
+                ],
+                'created_at',
+                'updated_at',
+            ]
         ]);
 
         $this->load($params);
@@ -69,9 +102,9 @@ class OrganizationSearch extends Organization
             'updated_at' => $this->updated_at,
         ]);
 
-
         $query->andFilterWhere(['like', 'name', $this->name]);
 
+        $query->andFilterWhere(['like', 'transaction.balance', $this->balance]);
 
         return $dataProvider;
     }

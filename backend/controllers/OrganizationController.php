@@ -64,8 +64,6 @@ class OrganizationController extends Controller
             ],
         );
 
-        $balance = Organization::getBalance($id);
-
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('view', [

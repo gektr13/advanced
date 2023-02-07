@@ -47,7 +47,7 @@ class Organization extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['balance'], 'number','min' => 0],
+            [['balance'], 'number', 'min' => 0],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 12],
             [['name'], 'unique'],
@@ -78,8 +78,8 @@ class Organization extends \yii\db\ActiveRecord
         return $this->hasMany(Transaction::class, ['organization_id' => 'id']);
     }
 
-    public static function getBalance($id)
+    public function getBalance()
     {
-        return Transaction::find()->where(['organization_id' => $id, 'type' => Transaction::TYPE_AUGMENT])->sum('value') - Transaction::find()->where(['organization_id' => $id, 'type' => Transaction::TYPE_DEDUCT])->sum('value');
+        return Transaction::find()->where(['organization_id' => $this->id, 'type' => Transaction::TYPE_AUGMENT])->sum('value') - Transaction::find()->where(['organization_id' => $this->id, 'type' => Transaction::TYPE_DEDUCT])->sum('value');
     }
 }
