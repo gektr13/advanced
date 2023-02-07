@@ -21,6 +21,10 @@ class CreateTransactionAugment extends Model
      */
     public $purpose;
 
+    const DEFAULT_VALUE = 0;
+
+    const DEFAULT_PURPOSE = 'default';
+
     /**
      * @inheritDoc
      * @return array
@@ -63,6 +67,41 @@ class CreateTransactionAugment extends Model
 
                 return true;
             } else {
+                throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
+            }
+        } catch (\Exception $e) {
+            $t->rollBack();
+            throw $e;
+        }
+    }
+
+    public function default()
+    {
+        $t = \Yii::$app->db->beginTransaction();
+        try {
+            $organization = $this->organization;
+
+            if (!($organization instanceof Organization)) {
+                throw new \Exception('Необходимо указать организацию');
+            }
+
+            if (!$this->validate()) {
+                return false;
+            }
+
+            $model = new Transaction();
+            $model->organization_id = $this->organization->id;
+            $model->value = self::DEFAULT_VALUE;
+            $model->purpose = self::DEFAULT_PURPOSE;
+            $model->type = Transaction::TYPE_AUGMENT;
+
+            if ($model->save()) {
+
+                $t->commit();
+
+                return true;
+            } else {
+                var_dump($model->errors);
                 throw new \Exception('Не удалось сохранить транзакцию ' . json_encode($model->errors));
             }
         } catch (\Exception $e) {

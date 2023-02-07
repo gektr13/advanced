@@ -52,7 +52,7 @@ class Transaction extends \yii\db\ActiveRecord
             [['organization_id', 'value', 'created_at'], 'integer'],
             [['type'], 'boolean'],
             [['purpose', 'value'], 'required'],
-            [['value'], 'integer', 'min' => 1],
+            [['value'], 'integer', 'min' => 0],
             [['purpose'], 'string', 'max' => 255],
             [['organization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::class, 'targetAttribute' => ['organization_id' => 'id']],
         ];
