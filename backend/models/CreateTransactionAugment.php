@@ -53,9 +53,8 @@ class CreateTransactionAugment extends Model
 
             $model = new Transaction();
             $model->organization_id = $this->organization->id;
-            $model->value = $this->value;
+            $model->value = abs($this->value);
             $model->purpose = $this->purpose;
-            $model->type = Transaction::TYPE_AUGMENT;
 
             if ($model->save()) {
 
@@ -70,4 +69,5 @@ class CreateTransactionAugment extends Model
             throw $e;
         }
     }
+
 }

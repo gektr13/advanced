@@ -15,9 +15,8 @@ class m230131_030047_create_transactions_table extends Migration
         $this->createTable('{{%transactions}}', [
             'id' => $this->primaryKey(),
             'organization_id' =>  $this->integer(),
-            'value' => $this->integer(),
+            'value' => $this->float(),
             'purpose' => $this->string()->notNull(),
-            'type' => $this->boolean(),
             'created_at' => $this->integer(),
         ]);
 

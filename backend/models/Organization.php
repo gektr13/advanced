@@ -11,7 +11,6 @@ use yii\db\ActiveRecord;
  * @property string $name
  * @property string $login
  * @property string $password_hash
- * @property float|null $balance
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -47,7 +46,6 @@ class Organization extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['balance'], 'number', 'min' => 0],
             [['created_at', 'updated_at'], 'safe'],
             [['name'], 'string', 'max' => 12],
             [['name'], 'unique'],
@@ -62,7 +60,6 @@ class Organization extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'balance' => 'Balance',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -80,6 +77,6 @@ class Organization extends \yii\db\ActiveRecord
 
     public function getBalance()
     {
-        return Transaction::find()->where(['organization_id' => $this->id, 'type' => Transaction::TYPE_AUGMENT])->sum('value') - Transaction::find()->where(['organization_id' => $this->id, 'type' => Transaction::TYPE_DEDUCT])->sum('value');
+        return Transaction::find()->where(['organization_id' => $this->id])->sum('value');
     }
 }
