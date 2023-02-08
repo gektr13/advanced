@@ -50,25 +50,18 @@ class OrganizationSearch extends Organization
             ->where(['type' => Transaction::TYPE_AUGMENT])
             ->groupBy('organization_id');
 
-        if (Transaction::find()->where(['type' => Transaction::TYPE_DEDUCT])->one()) {
-            $dedQuery = Transaction::find()
-                ->select('organization_id, SUM(value) as sum')
-                ->where(['type' => Transaction::TYPE_DEDUCT])
-                ->groupBy('organization_id');
+        $dedQuery = Transaction::find()
+            ->select('organization_id, SUM(value) as sum')
+            ->where(['type' => Transaction::TYPE_DEDUCT])
+            ->groupBy('organization_id');
 
-            $subQuery = Transaction::find()->from(['AUG' => $augQuery, 'DED' => $dedQuery])
-                ->select('AUG.organization_id, (AUG.sum - DED.sum) as balance')
-                ->groupBy('organization_id');
-        } else {
-            $subQuery = Transaction::find()->from(['AUG' => $augQuery])
-                ->select('AUG.organization_id, AUG.sum  as balance')
-                ->groupBy('organization_id');
-        }
-
+        $subQuery = Transaction::find()->from(['AUG' => $augQuery])
+            ->select('AUG.organization_id, (AUG.sum - DED.sum) as balance')
+            ->leftJoin(['DED' => $dedQuery], '`AUG`.`organization_id` = `DED`.`organization_id`')
+            ->groupBy('organization_id');
 
         $query->join('LEFT OUTER JOIN', ['transaction' => $subQuery], 'transaction.organization_id = id');
 
-        // print_r( $$subQuery->createCommand()->getRawSql());
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -105,7 +98,7 @@ class OrganizationSearch extends Organization
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         $query->andFilterWhere(['like', 'transaction.balance', $this->balance]);
-
+        // print_r( $query->createCommand()->getRawSql());
         return $dataProvider;
     }
 }

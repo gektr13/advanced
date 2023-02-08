@@ -86,9 +86,10 @@ class OrganizationController extends Controller
 
             if ($model->load($this->request->post()) && $model->save()) {
 
-                $default_transaction = new CreateTransactionAugment(['organization' => $this->findModel($model->id)]);
+                $default_transaction_augment = new CreateTransactionAugment(['organization' => $this->findModel($model->id)]);
+                $default_transaction_deduct = new CreateTransactionDeduct(['organization' => $this->findModel($model->id)]);
 
-                if ($default_transaction->default()) {
+                if ($default_transaction_augment->default() && $default_transaction_deduct->default()) {
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
             }

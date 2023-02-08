@@ -21,7 +21,7 @@ class CreateTransactionAugment extends Model
      */
     public $purpose;
 
-    const DEFAULT_VALUE = 0;
+    const DEFAULT_VALUE = 1;
 
     const DEFAULT_PURPOSE = 'default';
 
