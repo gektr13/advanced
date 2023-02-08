@@ -13,15 +13,12 @@ use yii\db\ActiveRecord;
  * @property int|null $organization_id
  * @property int|null $value
  * @property string $purpose
- * @property int|null $type
  * @property string|null $created_at
  *
  * @property Organization $organization
  */
 class Transaction extends \yii\db\ActiveRecord
 {
-    const TYPE_AUGMENT = 1;
-    const TYPE_DEDUCT = 0;
 
     public function behaviors()
     {
@@ -50,9 +47,8 @@ class Transaction extends \yii\db\ActiveRecord
     {
         return [
             [['organization_id', 'value', 'created_at'], 'integer'],
-            [['type'], 'boolean'],
             [['purpose', 'value'], 'required'],
-            [['value'], 'integer', 'min' => 1],
+            [['value'], 'number'],
             [['purpose'], 'string', 'max' => 255],
             [['organization_id'], 'exist', 'skipOnError' => true, 'targetClass' => Organization::class, 'targetAttribute' => ['organization_id' => 'id']],
         ];
@@ -68,7 +64,6 @@ class Transaction extends \yii\db\ActiveRecord
             'organization_id' => 'Organization ID',
             'value' => 'Value',
             'purpose' => 'Purpose',
-            'type' => 'type',
             'created_at' => 'Created At',
         ];
     }

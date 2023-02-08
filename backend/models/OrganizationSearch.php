@@ -21,7 +21,6 @@ class OrganizationSearch extends Organization
         return [
             [['id'], 'integer'],
             [['name', 'created_at', 'updated_at', 'balance'], 'safe'],
-            //[['balance'], 'number'],
         ];
     }
 
@@ -43,24 +42,13 @@ class OrganizationSearch extends Organization
      */
     public function search($params)
     {
-        $query = Organization::find()->select('organizations.id, organizations.name,transaction.balance as balance, organizations.created_at, organizations.updated_at');
+        $query = Organization::find()->select('organizations.id, organizations.name,transaction.balance, organizations.created_at, organizations.updated_at');
 
-        $augQuery = Transaction::find()
-            ->select('organization_id, SUM(value) as sum')
-            ->where(['type' => Transaction::TYPE_AUGMENT])
+        $subQuery = Transaction::find()
+            ->select('organization_id, SUM(value) as balance')
             ->groupBy('organization_id');
 
-        $dedQuery = Transaction::find()
-            ->select('organization_id, SUM(value) as sum')
-            ->where(['type' => Transaction::TYPE_DEDUCT])
-            ->groupBy('organization_id');
-
-        $subQuery = Transaction::find()->from(['AUG' => $augQuery])
-            ->select('AUG.organization_id, (AUG.sum - DED.sum) as balance')
-            ->leftJoin(['DED' => $dedQuery], '`AUG`.`organization_id` = `DED`.`organization_id`')
-            ->groupBy('organization_id');
-
-        $query->join('LEFT OUTER JOIN', ['transaction' => $subQuery], 'transaction.organization_id = id');
+        $query->join('LEFT JOIN', ['transaction' => $subQuery], 'transaction.organization_id = id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -70,11 +58,7 @@ class OrganizationSearch extends Organization
             'attributes' => [
                 'id',
                 'name',
-                'balance' => [
-                    'asc' => ['transaction.balance' => SORT_ASC],
-                    'desc' => ['transaction.balance' => SORT_DESC],
-                    'label' => 'Balance'
-                ],
+                'balance',
                 'created_at',
                 'updated_at',
             ]
@@ -91,14 +75,13 @@ class OrganizationSearch extends Organization
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'balance' => $this->balance,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
 
-        $query->andFilterWhere(['like', 'transaction.balance', $this->balance]);
-        // print_r( $query->createCommand()->getRawSql());
         return $dataProvider;
     }
 }

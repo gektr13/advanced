@@ -18,7 +18,6 @@ class TransactionSearch extends Transaction
     {
         return [
             [['id', 'organization_id', 'value'], 'integer'],
-            [['type'], 'boolean'],
             [['purpose', 'created_at'], 'safe'],
         ];
     }
@@ -62,7 +61,6 @@ class TransactionSearch extends Transaction
             'id' => $this->id,
             'organization_id' => $this->organization_id,
             'value' => $this->value,
-            'type' => $this->type,
             'created_at' => $this->created_at,
         ]);
 

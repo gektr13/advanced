@@ -15,7 +15,6 @@ class m230129_103656_create_organizations_table extends Migration
         $this->createTable('{{%organizations}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string(12)->notNull()->unique(),
-            'balance' => $this->float()->defaultValue(0),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
         ]);
