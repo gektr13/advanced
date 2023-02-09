@@ -3,7 +3,7 @@
 namespace backend\models;
 
 use Yii;
-use backend\models\Organization;
+use backend\models\Owner;
 use yii\db\ActiveRecord;
 
 /**

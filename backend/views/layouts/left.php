@@ -15,6 +15,7 @@
                     'items' => [
                         ['label' => 'Menu Yii2', 'header' => true],
                         ['label' => 'Организации', 'iconType' => 'far', 'icon' => 'file-code', 'url' => ['/organization/index']],
+                        ['label' => 'Владельцы', 'iconType' => 'far', 'icon' => 'file-code', 'url' => ['/owner/index']],
                         ['label' => 'Gii', 'iconType' => 'far', 'icon' => 'file-code', 'url' => ['/gii']],
                         ['label' => 'Debug', 'icon' => 'tachometer-alt', 'url' => ['/debug']],
                         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
