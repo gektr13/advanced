@@ -13,14 +13,17 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'brand')->textInput() ?>
-    <?= $form->field($model, 'model')->textInput() ?>
-    <?= $form->field($model, 'horsepower')->textInput() ?>
-    <?= $form->field($model, 'price')->textInput() ?>
-    <?= $form->field($model, 'year')->textInput() ?>
-    <?= $form->field($model, 'region')->textInput() ?>
+    <?= $form->field($model, 'brand')->textInput()->label('Марка') ?>
+    <?= $form->field($model, 'model')->textInput()->label('Модель') ?>
+    <?= $form->field($model, 'horsepower')->textInput()->label('Кол-во л.с.') ?>
+    <?= $form->field($model, 'price')->textInput()->label('Цена') ?>
+    <?= $form->field($model, 'year')->textInput()->label('Год выпуска') ?>
+    <?= $form->field($model, 'region')->dropDownList([
+        '1' => 'Москва',
+        '2' => 'Санкт-петербург',
+        '3' => 'Казань'
+    ])->label('Регион регистрации') ?>
 
-    <?= $form->errorSummary($model); ?>
 
     <br><br>
 
@@ -30,7 +33,7 @@ use yii\widgets\ActiveForm;
 
     <br><br>
 
-    <?=  Html::a( 'Back', Yii::$app->request->referrer)?>
+    <?= Html::a('Back', Yii::$app->request->referrer) ?>
 
     <?php ActiveForm::end(); ?>
 

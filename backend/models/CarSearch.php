@@ -18,7 +18,7 @@ class CarSearch extends Car
     {
         return [
             [['id', 'owner_id'], 'integer'],
-            [['owner_id', 'created_at'], 'safe'],
+            [['owner_id', 'brand', 'price', 'model', 'year', 'region', 'horsepower', 'created_at'], 'safe'],
         ];
     }
 
@@ -60,6 +60,9 @@ class CarSearch extends Car
         $query->andFilterWhere([
             'id' => $this->id,
             'owner_id' => $this->owner_id,
+            'brand' => $this->brand,
+            'price' => $this->price,
+            'horsepower' => $this->horsepower,
             'created_at' => $this->created_at,
         ]);
 

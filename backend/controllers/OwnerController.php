@@ -3,7 +3,6 @@
 namespace backend\controllers;
 
 use backend\models\Car;
-use backend\models\CreateCar;
 use backend\models\Owner;
 use backend\models\OwnerSearch;
 use backend\models\CarSearch;
@@ -148,10 +147,12 @@ class OwnerController extends Controller
 
     public function actionCreateCar($owner_id)
     {
-        $model = new CreateCar(['owner' => $this->findModel($owner_id)]);
+        $model = new Car(['owner' => $this->findModel($owner_id)]);
 
         if ($model->load(\Yii::$app->request->post()) && $model->create()) {
             return $this->redirect(['owner/view', 'id' => $owner_id]);
+        } else {
+            $model->loadDefaultValues();
         }
 
         return $this->render('car', [
@@ -167,7 +168,7 @@ class OwnerController extends Controller
      */
     public function actionCarView($id)
     {
-        return $this->render('view', [
+        return $this->render('car-view', [
             'model' => $this->findModelCar($id),
         ]);
     }
@@ -196,9 +197,17 @@ class OwnerController extends Controller
     protected function findModelCar($id)
     {
         if (($model = Car::findOne(['id' => $id])) !== null) {
+
             return $model;
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionCalculateTax()
+    {
+        $model = $this->findModelCar($_POST['id']);
+
+        return $model->calculateTax($_POST['month']) ;
     }
 }
