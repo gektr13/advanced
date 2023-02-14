@@ -42,13 +42,14 @@ class OrganizationSearch extends Organization
      */
     public function search($params)
     {
-        $query = Organization::find()->select('organizations.id, organizations.name,transaction.balance, organizations.created_at, organizations.updated_at');
-
-        $subQuery = Transaction::find()
-            ->select('organization_id, SUM(value) as balance')
-            ->groupBy('organization_id');
-
-        $query->join('LEFT JOIN', ['transaction' => $subQuery], 'transaction.organization_id = id');
+        $query = Organization::find()->select([
+                'organizations.id',
+                'organizations.name',
+                'balance' => '(SELECT SUM(value) FROM transactions WHERE transactions.organization_id = organizations.id)',
+                'organizations.created_at',
+                'organizations.updated_at',
+        ]
+        );
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -75,9 +76,12 @@ class OrganizationSearch extends Organization
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'balance' => $this->balance,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+        ]);
+
+        $query->andFilterHaving([
+            'balance' => $this->balance,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

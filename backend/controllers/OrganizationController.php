@@ -58,11 +58,7 @@ class OrganizationController extends Controller
      */
     public function actionView($id)
     {
-        $searchModel = new TransactionSearch(
-            [
-                'organization_id' => $id
-            ],
-        );
+        $searchModel = new TransactionSearch(['organization_id' => $id],);
 
         $dataProvider = $searchModel->search($this->request->queryParams);
 
