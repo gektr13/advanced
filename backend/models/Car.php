@@ -14,9 +14,20 @@ use yii\db\ActiveRecord;
  * @property string|null $created_at
  *
  * @property Owner $owner
+ * @property mixed|null $brand
+ * @property mixed|null $model
+ * @property mixed|null $horsepower
+ * @property mixed|null $price
+ * @property mixed|null $year
+ * @property string $region
  */
+
 class Car extends \yii\db\ActiveRecord
 {
+    const CONST_MSC = 'Москва';
+    const CONST_SPB = 'Санкт-Петербург';
+    const CONST_KZN = 'Казань';
+
     /**
      * @var integer
      */
@@ -129,15 +140,14 @@ class Car extends \yii\db\ActiveRecord
     public function getRegionText()
     {
         switch ($this->region) {
-            case ($this->region = 1):
+            case ($this->region = self::CONST_MSC):
                 return 'Москва';
 
-            case ($this->region = 2):
+            case ($this->region = self::CONST_SPB):
                 return 'Санкт-Петербург';
 
-            case ($this->region = 3):
+            case ($this->region = self::CONST_KZN):
                 return 'Казань';
-
         }
         return false;
     }

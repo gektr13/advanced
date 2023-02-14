@@ -35,7 +35,7 @@ class CreateTransactionAugment extends Model
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws \yii\db\Exception
      */
     public function create()
     {

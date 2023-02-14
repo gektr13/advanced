@@ -146,9 +146,13 @@ class OrganizationController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
+    /**
+     * @param $organization_id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
     public function actionAugmentTransaction($organization_id)
     {
-
         $model = new CreateTransactionAugment(['organization' => $this->findModel($organization_id)]);
 
         if ($model->load(\Yii::$app->request->post()) && $model->create()) {
@@ -160,9 +164,13 @@ class OrganizationController extends Controller
         ]);
     }
 
+    /**
+     * @param $organization_id
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
     public function actionDeductTransaction($organization_id)
     {
-
         $model = new CreateTransactionDeduct(['organization' => $this->findModel($organization_id)]);
 
         if ($model->load(\Yii::$app->request->post()) && $model->create()) {

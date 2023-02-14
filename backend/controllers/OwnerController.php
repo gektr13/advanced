@@ -191,7 +191,7 @@ class OwnerController extends Controller
      * Finds the Owner model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Owner the loaded model
+     * @return Car the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModelCar($id)
